@@ -1,0 +1,22 @@
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: rke-upgrade-sles
+  namespace: rke-upgrade-sles
+spec:
+  concurrency: 1
+  tolerations:
+  - {key: CriticalAddonsOnly, operator: Exists}
+  nodeSelector:
+    matchExpressions:
+    - {key: skip-rke-upgrade-sles, operator: DoesNotExist}
+  serviceAccountName: rke-upgrade-sles
+  drain:
+    force: false
+  version: sles15sp3-20220111
+  secrets:
+    - name: rke-upgrade-sles-script
+      path: /host/run/system-upgrade/secrets/upgrade
+  upgrade:
+    image: registry01.suse:5000/rke-prod/spacecmd:0.0.1
+    command: ["bash", "/host/run/system-upgrade/secrets/upgrade/start.sh"]
