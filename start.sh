@@ -155,7 +155,9 @@ function _EXECUTE_UPGRADE {
 
 function _REBOOT_IF_NEEDED {
         echo "Reboot if required"
-        chroot $HOSTMOUNT /bin/bash -c "if ! zypper needs-rebooting; then echo 'Reboot required'; reboot; else echo 'No reboot required'; fi"
+	# switch reboot to shutdown +1 to get rid of unknown container status
+        #chroot $HOSTMOUNT /bin/bash -c "if ! zypper needs-rebooting; then echo 'Reboot required'; reboot; else echo 'No reboot required'; fi"
+        chroot $HOSTMOUNT /bin/bash -c "if ! zypper needs-rebooting; then echo 'Reboot required'; shutdown -r +1; else echo 'No reboot required'; fi"
 }
 
 function _MAIN {
