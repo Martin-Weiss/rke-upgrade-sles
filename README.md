@@ -1,4 +1,4 @@
-To upgrade SLES 15 SP2 to SLES 15 SP3
+To upgrade SLES 15 SPx to SLES 15 SPy
 -------------------------------------
 
 - build a new spacecmd image from local resources
@@ -11,7 +11,9 @@ To upgrade SLES 15 SP2 to SLES 15 SP3
 
 - create a user in SUSE Manager that has the right to adjust software channel assignments on target systems
 
-- adjust start.sh to the environment (stages, channel-names, SUSE Manager user)
+- create / adjust start.sh-<version> to the environment (stages, channel-names, SUSE Manager user)
+
+- adjust the start.sh version to be used in create-rke-upgrade-sles-script-secret.sh
 
 - run create-rke-upgrade-sles-script-secret.sh to update the secret
 
@@ -26,3 +28,5 @@ To upgrade SLES 15 SP2 to SLES 15 SP3
 
 - monitor the upgrade
   - kubectl get pods -n rke-upgrade-sles
+
+- cleanup at the end with cleanup.sh

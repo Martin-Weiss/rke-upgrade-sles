@@ -11,13 +11,13 @@ stringData:
     function _DEFINE_VARIABLES {
             HOSTMOUNT=/host
             USERNAME=upgrade
-            PASSWORD="a-cwegsAS-AWFAD12-14!!"
-            OUTPUT_FILE=$HOSTMOUNT/root/sles15sp2-sp3-upgrade.txt
+            PASSWORD="suse1234"
+            OUTPUT_FILE=$HOSTMOUNT/root/sles15sp4-sp5-upgrade.txt
             # how many times wait for 5 seconds if salt job for changing channel assignments completes
             # 20 => 20 * 5s = 100s max wait
             WAIT_5S="20"
-            OLD_OS_VERSION="15-SP2"
-            NEW_OS_VERSION="15-SP3"
+            OLD_OS_VERSION="15-SP4"
+            NEW_OS_VERSION="15-SP5"
     }
     
     function _VERIFY_IN_CONTAINER {
@@ -84,23 +84,33 @@ stringData:
             if echo $CURRENT_BASECHANNEL |grep -- -sbx- 2>&1 >/dev/null; then
                     STAGE="-sbx-"
             fi
+            if echo $CURRENT_BASECHANNEL |grep -- -test- 2>&1 >/dev/null; then
+                    STAGE="-test-"
+            fi
+            if echo $CURRENT_BASECHANNEL |grep -- -int- 2>&1 >/dev/null; then
+                    STAGE="-int-"
+            fi
+            if echo $CURRENT_BASECHANNEL |grep -- -prod- 2>&1 >/dev/null; then
+                    STAGE="-prod-"
+            fi
             if [ "$STAGE" == "" ]; then
                     echo "No stage detected"
                     exit 1
             fi
     }
     
-    function _ADJUST_CHILDCHANNELS_FOR_15SP3 {
+    function _ADJUST_CHILDCHANNELS_FOR_15SP5 {
             for CHANNEL in $CURRENT_CHILDCHANNELS; do
     		if echo $CHANNEL|grep -E '(cap|suse-enterprise-storage|caasp)' >/dev/null 2>&1; then
                             echo
                     else
-                            echo $CHANNEL|sed 's/sp2/sp3/g'|sed 's/SP2/SP3/g'
+                            echo $CHANNEL|sed 's/sp4/sp5/g'|sed 's/SP4/SP5/g'
                     fi
             done
-            # adding additional channel for cloud-init-vmware-guestinfo in SLES 15 SP3 if not already included
-            TO_ADD="sles15sp3"$STAGE"suse-packagehub-15-sp3-backports-pool-x86_64"
-            if echo $CURRENT_CHILDCHANNELS |grep $(echo $TO_ADD|sed 's/sp3/sp2/g'|sed 's/SP3/SP2/g') >/dev/null 2>&1 || echo $CURRENT_CHILDCHANNELS |grep $(echo $TO_ADD)  >/dev/null 2>&1 ; then
+            # adding additional channel for cloud-init-vmware-guestinfo in SLES 15 SP5 if not already included
+    	# in the meantime this package needs to be uninstalled as laterst cloud-init does not require it anymore and it even causes major problems if it is still installed
+            TO_ADD="sles15sp5"$STAGE"suse-packagehub-15-sp5-backports-pool-x86_64"
+            if echo $CURRENT_CHILDCHANNELS |grep $(echo $TO_ADD|sed 's/sp5/sp4/g'|sed 's/SP5/SP4/g') >/dev/null 2>&1 || echo $CURRENT_CHILDCHANNELS |grep $(echo $TO_ADD)  >/dev/null 2>&1 ; then
                     # already in
                     :
             else
@@ -108,9 +118,9 @@ stringData:
             fi
     }
     
-    function _CREATE_LIST_NEW_CHANNELS_15SP3 {
-            NEW_BASECHANNEL=$(echo $CURRENT_BASECHANNEL|sed 's/sp2/sp3/g'|sed 's/SP2/SP3/g')
-            NEW_CHILDCHANNELS=$(_ADJUST_CHILDCHANNELS_FOR_15SP3)
+    function _CREATE_LIST_NEW_CHANNELS_15SP5 {
+            NEW_BASECHANNEL=$(echo $CURRENT_BASECHANNEL|sed 's/sp4/sp5/g'|sed 's/SP4/SP5/g')
+            NEW_CHILDCHANNELS=$(_ADJUST_CHILDCHANNELS_FOR_15SP5)
             NEW_ACTIVATIONKEY=$ACTIVATIONKEY
     }
     
@@ -138,8 +148,12 @@ stringData:
             done
     }
     
+    function _REMOVE_VMWARE_GUESTINFO {
+            chroot $HOSTMOUNT /bin/bash -c "zypper rm cloud-init-vmware-guestinfo -y"
+    }
+    
     function _CONNECT_NEW_CHANNELS {
-            echo "Changing assigned channels on $SYSTEM to SLES15-SP3"
+            echo "Changing assigned channels on $SYSTEM to SLES15-SP5"
             JOB_ID=$(spacecmd -q -y -- system_schedulechangechannels $SYSTEM -b $NEW_BASECHANNEL $(for CHANNEL in $NEW_CHILDCHANNELS; do echo " -c $CHANNEL "; done)|grep "Scheduled action id:"|cut -f2 -d ":"|sed 's/ //g')
             echo "JOB_ID is $JOB_ID"
             # wait until zypper ca shows new channels
@@ -176,9 +190,10 @@ stringData:
             _PREPARE_SPACECMD
             _COPY_GPG_KEY
             _GET_CURRENT_CHANNELS
-            _CREATE_LIST_NEW_CHANNELS_15SP3
+            _CREATE_LIST_NEW_CHANNELS_15SP5
             _OUTPUT
             _IMPORT_GPG_KEYS
+    	_REMOVE_VMWARE_GUESTINFO
             _CONNECT_NEW_CHANNELS
             _EXECUTE_UPGRADE
             _REBOOT_IF_NEEDED

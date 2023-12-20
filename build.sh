@@ -1,18 +1,18 @@
 #!/bin/bash
-VERSION="0.0.1"
+VERSION="15.5.2"
 
 # bot username in each registry and namespace (add robot$rke-dev+ to the name)
 RKE_USER="staging"
 RKE_PASSWORD='KUSLjyvg8-bKKgfZhtiQ'
 
 # 3 registries, 3 namespaces in each
-REGISTRIES="registry01.suse:5000"
+REGISTRIES="registry01.suse"
 NAMESPACES="rke-test rke-int rke-prod"
 
 # for the build process
 RKE_DEV_USER='staging'
 RKE_DEV_PASSWORD=$RKE_PASSWORD
-DEV_REGISTRY="registry01.suse:5000"
+DEV_REGISTRY="registry01.suse"
 DEV_NAMESPACE="rke-test"
 
 rm ~/.docker/config.json
@@ -29,5 +29,3 @@ for REGISTRY in $REGISTRIES; do
 		podman push --compress=false $REGISTRY/$NAMESPACE/spacecmd:$VERSION
 	done
 done
-
-
