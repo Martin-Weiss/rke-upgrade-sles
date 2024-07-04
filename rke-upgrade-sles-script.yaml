@@ -151,7 +151,7 @@ stringData:
     }
     
     function _REMOVE_VMWARE_GUESTINFO {
-            chroot $HOSTMOUNT /bin/bash -c "zypper rm cloud-init-vmware-guestinfo -y"
+            chroot $HOSTMOUNT /bin/bash -c "zypper rm -y cloud-init-vmware-guestinfo"
     }
     
     function _CONNECT_NEW_CHANNELS {
