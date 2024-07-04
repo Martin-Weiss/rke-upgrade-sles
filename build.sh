@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="15.5.2"
+VERSION="15.6.1"
 
 # bot username in each registry and namespace (add robot$rke-dev+ to the name)
 RKE_USER="staging"

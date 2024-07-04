@@ -13,10 +13,10 @@ spec:
   serviceAccountName: rke-upgrade-sles
   drain:
     force: false
-  version: sles15sp5-20231202
+  version: sles15sp6-20240704
   secrets:
     - name: rke-upgrade-sles-script
       path: /host/run/system-upgrade/secrets/upgrade
   upgrade:
-    image: registry01.suse/rke-prod/spacecmd:15.5.2
+    image: registry01.suse/rke-prod/spacecmd:15.6.1
     command: ["bash", "/host/run/system-upgrade/secrets/upgrade/start.sh"]

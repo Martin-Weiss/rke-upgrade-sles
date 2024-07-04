@@ -1,4 +1,4 @@
-FROM registry01.suse/rke-prod/registry.suse.com/bci/bci-base:15.5.36.5.67
+FROM registry01.suse/rke-prod/registry.suse.com/bci/bci-base:15.6.47.5.13
 # Adjust the maintainer to your name and email address
 MAINTAINER Martin Weiss <martin.weiss@suse.com>
 
@@ -14,14 +14,14 @@ COPY anchors/* /etc/pki/trust/anchors
 RUN /usr/sbin/update-ca-certificates
 
 RUN rm /usr/lib/zypp/plugins/services/container-suseconnect-zypp; \
-        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/sles15sp5 SLE-Product-SLES15-SP5-Pool; \
-        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp5-prod-sle-product-sles15-sp5-updates-x86_64/sles15sp5 SLE-Product-SLES15-SP5-Updates; \
-        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp5-prod-sle-module-basesystem15-sp5-pool-x86_64/sles15sp5 SLE-Module-Basesystem15-SP5-Pool; \
-        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp5-prod-sle-module-basesystem15-sp5-updates-x86_64/sles15sp5 SLE-Module-Basesystem15-SP5-Updates; \
-        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp5-prod-sle-module-server-applications15-sp5-pool-x86_64/sles15sp5 SLE-Module-Server-Applications15-SP5-Pool; \
-        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp5-prod-sle-module-server-applications15-sp5-updates-x86_64/sles15sp5 SLE-Module-Server-Applications15-SP5-Updates; \
-        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp5-prod-sle-manager-tools15-pool-x86_64-sp5/sles15sp5 SLE-Manager-Tools15-Pool; \
-        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp5-prod-sle-manager-tools15-updates-x86_64-sp5/sles15sp5 SLE-Manager-Tools15-Updates; \
+        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/sles15sp6 SLE-Product-SLES15-SP6-Pool; \
+        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp6-prod-sle-product-sles15-sp6-updates-x86_64/sles15sp6 SLE-Product-SLES15-SP6-Updates; \
+        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp6-prod-sle-module-basesystem15-sp6-pool-x86_64/sles15sp6 SLE-Module-Basesystem15-SP6-Pool; \
+        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp6-prod-sle-module-basesystem15-sp6-updates-x86_64/sles15sp6 SLE-Module-Basesystem15-SP6-Updates; \
+        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp6-prod-sle-module-server-applications15-sp6-pool-x86_64/sles15sp6 SLE-Module-Server-Applications15-SP6-Pool; \
+        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp6-prod-sle-module-server-applications15-sp6-updates-x86_64/sles15sp6 SLE-Module-Server-Applications15-SP6-Updates; \
+        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp6-prod-sle-manager-tools15-pool-x86_64-sp6/sles15sp6 SLE-Manager-Tools15-Pool; \
+        zypper ar --no-gpgcheck  https://susemanager.weiss.ddnss.de:443/ks/dist/child/staging-sles15sp6-prod-sle-manager-tools15-updates-x86_64-sp6/sles15sp6 SLE-Manager-Tools15-Updates; \
         zypper ref; \
         zypper -n up; \
         rm /usr/lib/zypp/plugins/services/container-suseconnect-zypp; \
